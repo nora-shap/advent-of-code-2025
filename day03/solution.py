@@ -1,51 +1,61 @@
 def part_1():
     """
-    labeled with joltage 1-9
-    arranged in banks, each line is a bank, you cannot rearrange
-    select 2 per bank
-    the joltage that the bank produces is equal to the number formed by the digits on the batteries you've selected
-    find the largest possible joltage that each bank can produce
-    total output joltage is the sum of the maximum joltage from each bank
+    need to power the escalator with batteries
+    each battery has a joltage 0-9, arranged in banks
+    row of integers, select 2 ints from each row to make the largest int, sum them
+    no rearranging
     """
     total = 0
-    with open('day03/input.txt', 'r') as banks:
-        for bank in banks:
-            bank = bank.rstrip()
-            first = max(bank[:-1])
-            first_i = bank.index(first)
-            second = max(bank[first_i + 1:])
-            total += int(f'{first}{second}')
+    # with open('day03/sample.txt', 'r') as _:
+    with open('day03/input.txt', 'r') as _:
+        for battery_bank in _:
+            batteries = list(battery_bank.rstrip('\n'))
+            # find largest number in str, don't look at -1
+            tens_options = batteries[:-1]
+            tens = max(tens_options)
+            tens_i = tens_options.index(tens)
+            tens = int(tens) * 10
+            # find largest number to the right of first number
+            ones_options = list(battery_bank)[tens_i + 1:]
+            ones = max(ones_options)
+
+            max_int = tens + int(ones)
+            total += max_int
     return total
 
 
 def part_2():
     """
-    make the largest joltage by selecting 12 within each bank
-    still cannot reorder but the 12 don't need to be sequential
+    row of integers, select 12 ints from each row to make the largest int, sum them
+    no rearranging but you can skip
     """
     total = 0
-    with open('day03/input.txt', 'r') as banks:
-        for bank in banks:
-            bank = bank.rstrip()
-            b = -11
-            selections = []
-            for x in range(12):
-                if x == 11:
-                    sli = bank
+    # with open('day03/sample.txt', 'r') as _:
+    with open('day03/input.txt', 'r') as _:
+        for battery_bank in _:
+            joltage = []
+            batteries = list(battery_bank.rstrip('\n'))
+            start_i = 0
+            end_i = 11
+            for x in range(end_i + 1):
+                if end_i == 0:
+                    options = batteries[start_i:]
                 else:
-                    sli = bank[:b]
-                n = max(sli)
-                selections.append(n)
-                a = sli.index(n) + 1
-                bank = bank[a:]
-                b += 1
+                    options = batteries[start_i:-end_i]
+                selection = max(options)
+                selection_i = options.index(selection) + start_i
+                batteries.pop(selection_i)
+                joltage.append(selection)
+                start_i = selection_i
+                end_i -= 1
 
-            total += int(''.join(selections))
-
+            max_int = int(''.join(joltage))
+            total += max_int
     return total
 
 
 if __name__ == '__main__':
     # filenames are hardcoded in func
+    # run with python day03/solution.py
     print(part_1())
     print(part_2())
