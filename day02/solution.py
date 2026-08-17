@@ -1,73 +1,72 @@
 import csv
 
-def gimmie_row():
-    """
-    input is just 1 line, gives us a list of str ranges
-    """
-    with open('day02/part_1_input.txt', 'r') as id_ranges:
+def get_ranges():
+    # with open('day02/sample.txt', 'r') as id_ranges:
+    with open('day02/input.txt', 'r') as id_ranges:
         reader_obj = csv.reader(id_ranges)
         return next(reader_obj)
 
+
 def part_1():
     """
-    invalid product ids in input, identify them.
-    input is ranges??? in csv,  format is first_id-last_id
-    invalid id == made ONLY of some sequence of digits repeated TWICE
-    none have leading 0's
-    find all invalid ids that appear in the given range, start and end inclusive
-    add the invalid ids together
+    invalid product ids added to db. check ranges
+    Invalid ID = made only of some sequence of digits repeated TWICE
+    find all of the invalid IDs that appear in the given ranges, sum them.
     """
-    row = gimmie_row()
+    ranges = get_ranges()
     total = 0
 
-    for id_range in row:
-        split_ids = id_range.split('-')
-        start = int(split_ids[0])
-        end = int(split_ids[1])
-
-        for id in range(start, end + 1):
-            id_as_str = str(id)
-            is_even = len(id_as_str) % 2 == 0
-            if is_even:
-                front, back = id_as_str[:len(id_as_str)//2], id_as_str[len(id_as_str)//2:]
-                if front == back:
-                    total += id
+    for range_as_str in ranges:
+        x = range_as_str.split('-')
+        start = int(x[0])
+        end = int(x[-1])
+        for i in range(start, end+1):
+            as_str = str(i)
+            if len(as_str) % 2 == 0:
+                first_half = as_str[0:len(as_str)//2]
+                second_half = as_str[len(as_str)//2:]
+                if first_half == second_half:
+                    total += i
 
     return total
 
 
+
 def part_2():
     """
-    definition of invalid has changed:
-    made ONLY of some sequence, repeated twice OR MORE
+    invalid if it is made only of some sequence of digits repeated at least twice
     """
-    row = gimmie_row()
+    ranges = get_ranges()
     total = 0
 
-    for id_range in row:
-        split_ids = id_range.split('-')
-        start = int(split_ids[0])
-        end = int(split_ids[1])
+    for range_as_str in ranges:
+        x = range_as_str.split('-')
+        start = int(x[0])
+        end = int(x[-1])
+        for i in range(start, end + 1):
+            as_str = str(i)
+            num_digits_in_sequence = len(as_str)
+            max_sequence_len = num_digits_in_sequence // 2
+            sequence_len = max_sequence_len
+            while sequence_len > 0:
+                if num_digits_in_sequence % sequence_len == 0:
+                    num_sequences = num_digits_in_sequence // sequence_len
+                    sequences = set()
+                    s = 0
+                    for z in range(num_sequences):
+                        sequences.add(as_str[s:s+sequence_len])
+                        s += sequence_len
+                    if len(sequences) == 1:
+                        total += i
+                        break  # multiple matches in the same i don't count, so if you find one, don't keep searching this i
+                sequence_len -= 1
 
-        for id in range(start, end + 1):
-            id_as_str = str(id)
-            for i in range(len(id_as_str)//2):
-                sequence_to_check = id_as_str[:i + 1]
-                if len(id_as_str) % (i + 1) == 0:
-                    c = id_as_str.count(sequence_to_check)
-                    if c > 1:
-                        repeats = set()
-                        slice_cut = 0
-                        while slice_cut < len(id_as_str):
-                            repeats.add(id_as_str[slice_cut:slice_cut+i+1])
-                            slice_cut += i+1
-                        if len(repeats) == 1:
-                            total += id
-                            break
+
     return total
 
 
 if __name__ == '__main__':
     # filenames are hardcoded in func
+    # run with python day02/solution.py
     print(part_1())
     print(part_2())
