@@ -2,8 +2,9 @@ def part_1():
     """
 
     """
-    # with open('dayx/sample.txt', 'r') as _:
-    # with open('dayx/input.txt', 'r') as _:
+    input = 'sample'
+    # input = 'input'
+    lines = open(f'dayx/{input}.txt').read().splitlines()
     pass
 
 
@@ -11,8 +12,9 @@ def part_2():
     """
 
     """
-    # with open('dayx/sample.txt', 'r') as _:
-    # with open('dayx/input.txt', 'r') as _:
+    input = 'sample'
+    # input = 'input'
+    lines = open(f'dayx/{input}.txt').read().splitlines()
     pass
 
 
